@@ -503,61 +503,86 @@ a {
 
 .hero-stats-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 16px;
+  width: 100%;
 }
 
 .stat-card {
   background-color: var(--color-bg-card);
   border: 1px solid var(--color-border);
-  padding: 16px;
-  border-radius: 8px;
+  padding: 20px 14px;
+  border-radius: 12px;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 8px;
+  min-width: 0;
+  min-height: 96px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.stat-card:hover {
+  border-color: var(--color-accent);
 }
 
 .stat-label {
   font-family: var(--font-display);
-  font-size: 0.65rem;
+  font-size: clamp(0.7rem, 2vw, 0.78rem);
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.12em;
   color: var(--color-text-muted);
-}
-
-.stat-value {
-  font-family: var(--font-display);
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: var(--color-text-primary);
+  text-transform: uppercase;
+  white-space: nowrap;
+  line-height: 1.2;
+  text-align: center;
 }
 
 .stat-val-wrapper {
   display: flex;
   align-items: baseline;
-  gap: 8px;
-  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  min-width: 0;
+  white-space: nowrap;
+}
+
+.stat-value {
+  font-family: var(--font-display);
+  font-size: clamp(1.2rem, 3.6vw, 1.55rem);
+  font-weight: 800;
+  color: var(--color-text-primary);
+  white-space: nowrap;
+  line-height: 1.2;
 }
 
 .stat-change {
   font-family: var(--font-display);
-  font-size: 0.75rem;
+  font-size: clamp(0.68rem, 2vw, 0.78rem);
   font-weight: 700;
   display: inline-flex;
   align-items: center;
   gap: 2px;
+  white-space: nowrap;
+  background: transparent;
+  border: none;
+  padding: 0;
 }
 
 .stat-change.text-green {
-  color: var(--color-green);
+  color: #00e676;
 }
 
 .stat-change.text-red {
-  color: var(--color-red);
+  color: #ff4d4d;
 }
 
 .stat-change.text-neutral {
-  color: var(--color-text-muted);
+  color: #888880;
 }
 
 /* Currency Dropdown Tag in Oil Index Header */
@@ -1646,24 +1671,35 @@ a {
   }
 
   .hero-stats-grid {
-    gap: 8px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
   }
 
   .stat-card {
-    padding: 10px 6px;
-    gap: 2px;
+    padding: 14px 6px;
+    gap: 5px;
+    min-width: 0;
+    min-height: 84px;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .stat-val-wrapper {
+    align-items: baseline;
+    justify-content: center;
+    gap: 4px;
   }
 
   .stat-value {
-    font-size: 0.95rem;
+    font-size: clamp(1rem, 3.8vw, 1.25rem);
   }
 
   .stat-label {
-    font-size: 0.55rem;
+    font-size: clamp(0.62rem, 2.2vw, 0.72rem);
   }
 
   .stat-change {
-    font-size: 0.65rem;
+    font-size: clamp(0.6rem, 2vw, 0.72rem);
   }
 
   .oil-index-card {

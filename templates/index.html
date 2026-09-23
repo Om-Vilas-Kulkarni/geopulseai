@@ -142,7 +142,9 @@
             </div>
             <div class="stat-card">
               <span class="stat-label">USD/INR</span>
-              <span class="stat-value" id="stat-refresh">--</span>
+              <div class="stat-val-wrapper">
+                <span class="stat-value" id="stat-refresh">--</span>
+              </div>
             </div>
           </div>
         </div>
@@ -945,10 +947,19 @@
         // Render percentage change badges for petrol and diesel
         function renderChange(elementId, changeStr) {
           const el = document.getElementById(elementId);
-          if (!el || !changeStr) return;
+          if (!el) return;
+          if (!changeStr) {
+            el.className = "stat-change text-neutral";
+            el.innerHTML = `▲ 0%`;
+            return;
+          }
           const cleanStr = changeStr.replace('%', '').trim();
           const num = parseFloat(cleanStr);
-          if (isNaN(num)) return;
+          if (isNaN(num)) {
+            el.className = "stat-change text-neutral";
+            el.innerHTML = `▲ 0%`;
+            return;
+          }
 
           if (num > 0) {
             el.className = "stat-change text-green";
@@ -1032,20 +1043,37 @@
               }
             }
 
-            data.live_news.forEach((news) => {
+            data.live_news.forEach((news, idx) => {
               const item = document.createElement('div');
               item.className = 'stream-item';
+              const isTop = news.is_top || idx === 0;
+
+              if (isTop) {
+                item.style.borderLeft = '4px solid var(--color-red, #ff4d4d)';
+                item.style.background = 'rgba(255, 77, 77, 0.06)';
+                item.style.borderRadius = '6px';
+                item.style.paddingLeft = '12px';
+              }
+
               const formattedTime = formatNewsDate(news.published);
+              const topBadge = isTop
+                ? `<span style="background: var(--color-red, #ff4d4d); color: #ffffff; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 4px; margin-right: 6px; letter-spacing: 0.5px;">🔥 PRIMARY IMPACT HEADLINE</span>`
+                : '';
 
               item.innerHTML = `
-                <div class="stream-icon"><i class="fa-solid fa-newspaper"></i></div>
+                <div class="stream-icon" style="${isTop ? 'color: var(--color-red, #ff4d4d);' : ''}">
+                  <i class="fa-solid ${isTop ? 'fa-fire-flame-curved' : 'fa-newspaper'}"></i>
+                </div>
                 <div class="stream-content">
-                  <div class="stream-meta">
+                  <div class="stream-meta" style="display: flex; align-items: center; flex-wrap: wrap; gap: 4px;">
+                    ${topBadge}
                     <span class="meta-source">${news.source}</span>
                     <span class="meta-divider">•</span>
                     <span class="meta-time">${formattedTime}</span>
                   </div>
-                  <h4 class="stream-headline"><a href="${news.link}" target="_blank">${news.title}</a></h4>
+                  <h4 class="stream-headline" style="${isTop ? 'font-weight: 700; color: #ffffff;' : ''}">
+                    <a href="${news.link}" target="_blank">${news.title}</a>
+                  </h4>
                 </div>
                 <div class="stream-action">
                   <a href="${news.link}" target="_blank" class="stream-link-btn">Link <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
