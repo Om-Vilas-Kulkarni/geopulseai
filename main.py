@@ -132,7 +132,7 @@ def crude_prices():
                 
             client = genai.Client(api_key=api_key)
             interaction = client.interactions.create(
-                model="gemini-3.1-flash-lite",
+                model="gemini-flash-lite-latest",
                 input=f"These are the news: {req_headlines}, give me just the json output as 'instability_index' parameter ranging from 1-100, 'impact' parameter which tells oil prices will rise or fall and 'reason' parameter which explains why. Do not format your response in any way (no markdown blocks or prefix/suffix). Just the raw json string.",
             )
             raw_text = interaction.output_text
