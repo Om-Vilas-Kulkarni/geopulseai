@@ -1,0 +1,1169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GeoPulse | GeoPolitical Instability Index & Real Time Analytics</title>
+  <link rel="icon" href="../static/GeoPulse Logo.png">
+  <meta name="description"
+    content="GeoPulse quantifies geopolitical and financial pressure on India and estimates the Indian Basket price in real time. It aggregates global events and market signals to compute a live instability index reflecting India's overall risk exposure. All metrics are updated continuously to ensure users have access to the most current data available.">
+
+  <!-- Premium Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet">
+
+  <!-- FontAwesome for Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="../static/style.css">
+  <!-- Chart.js for Visualizations -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+  <!-- Page Loader Overlay -->
+  <div id="page-loader">
+    <div class="loader-logo-wrapper">
+      <div class="loader-ring-outer"></div>
+      <div class="loader-ring"></div>
+      <div class="loader-ring-inner"></div>
+      <img src="../static/GeoPulse Logo.png" alt="GeoPulse Logo" class="loader-logo-img">
+    </div>
+    <div class="loader-text">Analyzing Geopolitical Wires...</div>
+  </div>
+
+
+
+  <!-- Top Sticky Header & Navigation -->
+  <header class="main-header">
+    <div class="header-container">
+      <a href="#" class="logo-wrapper">
+        <img src="../static/GeoPulse Logo.png" alt="GeoPulse A.I. Logo" class="brand-logo">
+        <span class="logo-text-gradient">GEOPULSE</span>
+      </a>
+
+      <nav class="nav-menu" id="navMenu">
+        <a href="#spotlight" class="nav-link active">Spotlight</a>
+        <a href="#indices" class="nav-link">Indices</a>
+        <a href="#signals" class="nav-link">Signals</a>
+      </nav>
+
+      <div class="header-actions">
+        <div class="live-status">
+          <span class="live-indicator"></span>
+          <span class="live-text">LIVE <span class="divider">•</span> IST <span
+              id="current-ist-time">14:42</span></span>
+        </div>
+        <button class="mobile-menu-toggle" id="menuToggle" aria-label="Toggle Menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Marquee / Ticker Tape -->
+  <div class="ticker-tape">
+    <div class="ticker-wrapper" id="ticker-wrapper">
+      <div class="ticker-track">
+        <div class="ticker-item"><span class="ticker-name">BRENT</span> <span class="ticker-value text-green"
+            id="m_brent"></span></div>
+        <div class="ticker-item"><span class="ticker-name">WTI</span> <span class="ticker-value text-green"
+            id="m_wti"></span></div>
+        <div class="ticker-item"><span class="ticker-name">OPEC</span> <span class="ticker-value text-green"
+            id="m_opec"></span></div>
+        <div class="ticker-item"><span class="ticker-name">OMAN</span> <span class="ticker-value text-green"
+            id="m_oman"></span></div>
+        <div class="ticker-item"><span class="ticker-name">DUBAI</span> <span class="ticker-value text-green"
+            id="m_dubai"></span></div>
+        <div class="ticker-item"><span class="ticker-name">PETROL</span> <span class="ticker-value text-green"
+            id="m_petrol"></span></div>
+        <div class="ticker-item"><span class="ticker-name">DIESEL</span> <span class="ticker-value text-green"
+            id="m_diesel"></span></div>
+      </div>
+    </div>
+  </div>
+
+  <main class="dashboard-content">
+
+    <!-- Hero / Spotlight Section -->
+    <section id="spotlight" class="spotlight-section">
+
+      <div class="spotlight-grid">
+
+        <!-- Left Hero Content -->
+        <div class="hero-info-card">
+          <div class="spotlight-tag">
+            <span class="spotlight-dot"></span> GEOPULSE'S SPOTLIGHT
+          </div>
+
+          <h1 class="hero-title">
+            How hard will <span class="highlight-gold">crude</span> hit India <span class="italic-serif">today?</span>
+          </h1>
+
+          <p class="hero-description">
+            GeoPulse quantifies geopolitical and financial pressure on India and estimates the Indian Basket price. It
+            aggregates global events and market signals to compute a live instability index reflecting
+            India's overall risk exposure in real-time.
+          </p>
+
+          <div class="hero-actions">
+            <button class="btn btn-primary"
+              onclick="document.getElementById('indices').scrollIntoView({behavior: 'smooth'})">
+              View Instability Index <i class="fa-solid fa-arrow-right"></i>
+            </button>
+            <button class="btn btn-outline"
+              onclick="document.getElementById('signals').scrollIntoView({behavior: 'smooth'})">
+              View Current News
+            </button>
+          </div>
+
+          <div class="hero-stats-grid">
+            <div class="stat-card">
+              <span class="stat-label">PETROL</span>
+              <div class="stat-val-wrapper">
+                <span class="stat-value" id="stat-signals">--</span>
+                <span class="stat-change" id="stat-petrol-change"></span>
+              </div>
+            </div>
+            <div class="stat-card">
+              <span class="stat-label">DIESEL</span>
+              <div class="stat-val-wrapper">
+                <span class="stat-value" id="stat-sources">--</span>
+                <span class="stat-change" id="stat-diesel-change"></span>
+              </div>
+            </div>
+            <div class="stat-card">
+              <span class="stat-label">USD/INR</span>
+              <span class="stat-value" id="stat-refresh">--</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column - Oil Industry Index Card -->
+        <div class="oil-index-card">
+          <div class="card-header">
+            <div class="card-title-grp">
+              <span class="card-subtitle">OIL INDUSTRY INDEX - INDIA</span>
+              <h2 class="card-title">Indian Crude Basket </h2>
+            </div>
+            <select id="currency-select" class="currency-dropdown-tag">
+              <option value="USD" selected>USD ($)</option>
+              <option value="INR">INR (₹)</option>
+            </select>
+          </div>
+
+          <img src="../static/oil-barrels.svg" alt="Oil Barrels Vector Graphic" class="oil-barrel-graphic">
+
+          <div class="index-score-block">
+            <div class="score-display" style="display: flex; align-items: baseline; gap: 8px;">
+              <span class="score-value" id="crude-score"></span>
+              <span class="score-unit" id="crude-unit"
+                style="font-size: 1.5rem; color: #ffffff; opacity: 0.95; font-weight: 600; font-family: var(--font-display);">$/bbl</span>
+            </div>
+          </div>
+
+          <!-- Indian Basket Comparison Graph (Actual vs Predicted Line Graph) -->
+          <div class="basket-graph-wrapper">
+            <div class="basket-graph-header">
+              <h3 class="graph-title">Actual vs Predicted Price</h3>
+            </div>
+
+            <div class="graph-canvas-container">
+              <div class="graph-legend-overlay">
+                <div class="legend-item">
+                  <span class="legend-dot actual-dot"></span>
+                  <span class="legend-label">Actual (Back-dated)</span>
+                </div>
+                <div class="legend-item">
+                  <span class="legend-dot predicted-dot"></span>
+                  <span class="legend-label">Predicted (Market)</span>
+                </div>
+              </div>
+              <canvas id="basketComparisonChart"></canvas>
+            </div>
+          </div>
+
+          <!-- Fixed Sliders for Crude Readings -->
+          <div class="crude-readings-container">
+            <div class="crude-slider-item">
+              <div class="crude-slider-header">
+                <span class="crude-slider-label">DME OMAN</span>
+                <span class="crude-slider-val" id="val-oman">--</span>
+              </div>
+              <div class="mini-gauge-bar">
+                <div class="gauge-progress" id="prog-oman" style="width: 0%;"></div>
+                <div class="gauge-pointer" id="pointer-oman" style="left: 0%;"></div>
+              </div>
+            </div>
+
+            <div class="crude-slider-item">
+              <div class="crude-slider-header">
+                <span class="crude-slider-label">DUBAI</span>
+                <span class="crude-slider-val" id="val-dubai">--</span>
+              </div>
+              <div class="mini-gauge-bar">
+                <div class="gauge-progress" id="prog-dubai" style="width: 0%;"></div>
+                <div class="gauge-pointer" id="pointer-dubai" style="left: 0%;"></div>
+              </div>
+            </div>
+
+            <div class="crude-slider-item">
+              <div class="crude-slider-header">
+                <span class="crude-slider-label">BRENT</span>
+                <span class="crude-slider-val" id="val-brent">--</span>
+              </div>
+              <div class="mini-gauge-bar">
+                <div class="gauge-progress" id="prog-brent" style="width: 0%;"></div>
+                <div class="gauge-pointer" id="pointer-brent" style="left: 0%;"></div>
+              </div>
+            </div>
+
+            <div class="crude-slider-item">
+              <div class="crude-slider-header">
+                <span class="crude-slider-label">WTI</span>
+                <span class="crude-slider-val" id="val-wti">--</span>
+              </div>
+              <div class="mini-gauge-bar">
+                <div class="gauge-progress" id="prog-wti" style="width: 0%;"></div>
+                <div class="gauge-pointer" id="pointer-wti" style="left: 0%;"></div>
+              </div>
+            </div>
+
+            <div class="crude-slider-item">
+              <div class="crude-slider-header">
+                <span class="crude-slider-label">OPEC</span>
+                <span class="crude-slider-val" id="val-opec">--</span>
+              </div>
+              <div class="mini-gauge-bar">
+                <div class="gauge-progress" id="prog-opec" style="width: 0%;"></div>
+                <div class="gauge-pointer" id="pointer-opec" style="left: 0%;"></div>
+              </div>
+            </div>
+
+            <p class="crude-disclaimer">
+              GeoPulse estimates The Indian basket of Crude Oil which is a derived basket comprising of Sweet grade
+              (Brent Dated) and Sour grade (Oman & Dubai average) of Crude oil imported by Indian refineries during each
+              month.
+            </p>
+          </div>
+
+        </div>
+      </div>
+      </div>
+    </section>
+
+    <!-- The Wider Pulse / Macro Indices Section -->
+    <section id="indices" class="macro-indices-section">
+      <div class="section-header">
+        <div>
+          <span class="section-tag">THE WIDER PULSE</span>
+          <h2 class="section-title">Instability <span class="highlight-gold-italic">Index</span></h2>
+        </div>
+      </div>
+
+      <div id="instability-section-grid" class="instability-section-grid">
+
+        <!-- SVG Overlay for connecting explanatory arrows -->
+        <svg id="exploded-arrows-svg"
+          style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5; overflow: visible;">
+          <defs>
+            <marker id="arrow-head-1" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6"
+              orient="auto-start-reverse">
+              <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="rgba(240, 165, 0, 0.85)" />
+            </marker>
+            <marker id="arrow-head-2" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6"
+              orient="auto-start-reverse">
+              <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="rgba(255, 77, 77, 0.85)" />
+            </marker>
+            <marker id="arrow-head-3" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6"
+              orient="auto-start-reverse">
+              <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="rgba(0, 230, 118, 0.85)" />
+            </marker>
+          </defs>
+          <path id="path-arrow-1" fill="none" stroke="rgba(240, 165, 0, 0.7)" stroke-width="2" stroke-dasharray="4,4"
+            marker-end="url(#arrow-head-1)" style="transition: d 0.2s ease;" />
+          <path id="path-arrow-2" fill="none" stroke="rgba(255, 77, 77, 0.7)" stroke-width="2" stroke-dasharray="4,4"
+            marker-end="url(#arrow-head-2)" style="transition: d 0.2s ease;" />
+          <path id="path-arrow-3" fill="none" stroke="rgba(0, 230, 118, 0.7)" stroke-width="2" stroke-dasharray="4,4"
+            marker-end="url(#arrow-head-3)" style="transition: d 0.2s ease;" />
+        </svg>
+
+        <!-- Left Side: Instability Card -->
+        <div class="instability-container"
+          style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; padding: 40px; background: linear-gradient(135deg, rgba(20, 20, 15, 0.95) 0%, rgba(10, 10, 8, 0.98) 100%); border: 1px solid var(--color-border); border-radius: 16px; text-align: center; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), 0 0 25px rgba(240, 165, 0, 0.08); position: relative; overflow: hidden;">
+
+          <!-- Card Header -->
+          <div class="card-header"
+            style="width: 100%; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255, 255, 255, 0.15); padding-bottom: 16px; margin-bottom: 8px;">
+            <div class="card-title-grp" style="text-align: left;">
+              <span class="card-subtitle">GEOPOLITICAL RISK ANALYSIS</span>
+              <h2 class="card-title"
+                style="font-family: var(--font-serif); font-size: 1.8rem; font-style: italic; color: #fff; margin: 4px 0 0 0; font-weight: 500; text-transform: none;">
+                Instability index</h2>
+            </div>
+            <div
+              style="display: flex; align-items: center; gap: 6px; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255,255,255,0.08); padding: 4px 10px; border-radius: 20px; color: var(--color-red, #ff4d4d);">
+              <span class="pulse-dot"></span>
+              <span
+                style="font-size: 0.65rem; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 1px; font-weight: 600;">Live</span>
+            </div>
+          </div>
+
+          <!-- Circular Gauge (Semi-Circle Arc) -->
+          <div id="arrow-src-gauge" class="circular-gauge-wrapper"
+            style="position: relative; width: 280px; height: 150px; display: flex; align-items: flex-end; justify-content: center; margin-top: 10px; margin-bottom: 5px;">
+            <svg width="280" height="150" style="position: absolute; top: 0; left: 0;">
+              <!-- Background Arc -->
+              <path d="M 40 120 A 100 100 0 0 1 240 120" fill="none" stroke="rgba(255, 255, 255, 0.08)"
+                stroke-width="10" stroke-linecap="round" />
+              <!-- Progress Arc -->
+              <path id="instability-gauge-circle" d="M 40 120 A 100 100 0 0 1 240 120" fill="none"
+                stroke="var(--color-accent, #f0a500)" stroke-width="10" stroke-linecap="round" stroke-dasharray="314.16"
+                stroke-dashoffset="314.16" style="transition: stroke-dashoffset 1s ease-out;" />
+
+              <!-- Ticks -->
+              <line x1="40" y1="125" x2="40" y2="133" stroke="rgba(255, 255, 255, 0.7)" stroke-width="2" />
+              <text x="40" y="145" fill="rgba(255, 255, 255, 0.6)" font-size="0.75rem" font-family="monospace"
+                font-weight="600" text-anchor="middle">0</text>
+
+              <line x1="140" y1="20" x2="140" y2="28" stroke="rgba(255, 255, 255, 0.7)" stroke-width="2" />
+              <text x="140" y="14" fill="rgba(255, 255, 255, 0.6)" font-size="0.75rem" font-family="monospace"
+                font-weight="600" text-anchor="middle">50</text>
+
+              <line x1="240" y1="125" x2="240" y2="133" stroke="rgba(255, 255, 255, 0.7)" stroke-width="2" />
+              <text x="240" y="145" fill="rgba(255, 255, 255, 0.6)" font-size="0.75rem" font-family="monospace"
+                font-weight="600" text-anchor="middle">100</text>
+            </svg>
+
+            <!-- Value in the center -->
+            <div
+              style="position: absolute; bottom: 15px; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%;">
+              <span id="instability-value"
+                style="font-size: 3.2rem; font-weight: 700; font-family: var(--font-display); color: #fff; line-height: 1;">--</span>
+              <span
+                style="font-size: 0.75rem; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 1.5px; margin-top: 4px; font-weight: 600;">Score</span>
+            </div>
+          </div>
+
+
+
+          <!-- Section Divider -->
+          <div
+            style="width: 100%; height: 1px; background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent); margin: 4px 0;">
+          </div>
+
+          <!-- Impact & Reasoning side-by-side -->
+          <div class="instability-impact-reasoning-row">
+            <!-- Left: Estimated Impact -->
+            <div class="instability-impact-block"
+              style="display: flex; flex-direction: column; gap: 8px; align-items: flex-start;">
+              <span
+                style="font-size: 0.75rem; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 1.5px; font-weight: 600;">Estimated
+                Impact</span>
+              <span id="instability-impact" class="impact-badge"
+                style="font-size: 0.9rem; font-weight: 600; text-transform: uppercase; padding: 6px 14px; border-radius: 4px; background: rgba(255, 77, 77, 0.1); color: var(--color-red); border: 1px solid rgba(255, 77, 77, 0.2); display: inline-flex; align-items: center; gap: 4px; transition: all 0.3s ease;">--</span>
+            </div>
+
+            <!-- Right: Reasoning Block -->
+            <div class="instability-reasoning-block"
+              style="display: flex; flex-direction: column; gap: 8px; align-items: flex-start;">
+              <span
+                style="font-size: 0.75rem; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 1.5px; font-weight: 600;">Reasoning
+                Analysis</span>
+              <p id="instability-reason"
+                style="font-size: 0.95rem; color: #e0e0e0; line-height: 1.5; font-weight: 400; margin: 0;">
+                Geopolitical conflicts in the Middle East and Russia-Ukraine are restricting supply chains...
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="exploded-view-container"
+          style="display: flex; flex-direction: column; gap: 20px; padding: 28px; background: linear-gradient(135deg, rgba(20, 20, 15, 0.95) 0%, rgba(10, 10, 8, 0.98) 100%); border: 1px solid var(--color-border); border-radius: 16px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), 0 0 25px rgba(240, 165, 0, 0.08); align-self: start;">
+          <h3
+            style="font-family: var(--font-display); font-size: 1.5rem; color: #fff; margin-bottom: 8px; border-bottom: 1px solid var(--color-border); padding-bottom: 12px; font-weight: 600;">
+            Explanation</h3>
+
+          <!-- Exploded Part 1 -->
+          <div class="exploded-part" style="display: flex; gap: 16px; align-items: start;">
+            <div id="arrow-tgt-1"
+              style="background: rgba(240, 165, 0, 0.1); border: 1px solid var(--color-accent); color: var(--color-accent); border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; font-size: 0.95rem;">
+              1</div>
+            <div>
+              <h4 style="font-size: 1rem; color: #fff; margin-bottom: 4px; font-weight: 600;">Real-Time Instability
+                Score</h4>
+              <p style="font-size: 0.85rem; color: var(--color-text-secondary); line-height: 1.5; margin: 0;">A 1-100
+                gauge reflecting global energy risk. Driven by LLM analysis of real-time geopolitical, logistical, and
+                macroeconomic signals.</p>
+            </div>
+          </div>
+
+          <!-- Exploded Part 2 -->
+          <div class="exploded-part" style="display: flex; gap: 16px; align-items: start;">
+            <div id="arrow-tgt-2"
+              style="background: rgba(255, 77, 77, 0.1); border: 1px solid var(--color-red); color: var(--color-red); border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; font-size: 0.95rem;">
+              2</div>
+            <div>
+              <h4 style="font-size: 1rem; color: #fff; margin-bottom: 4px; font-weight: 600;">Estimated Price Impact
+                Direction</h4>
+              <p style="font-size: 0.85rem; color: var(--color-text-secondary); line-height: 1.5; margin: 0;">Indicates
+                the anticipated market direction (Rise or Fall) for the Indian Crude Basket based on aggregate
+                disruption signals.</p>
+            </div>
+          </div>
+
+          <!-- Exploded Part 3 -->
+          <div class="exploded-part" style="display: flex; gap: 16px; align-items: start;">
+            <div id="arrow-tgt-3"
+              style="background: rgba(0, 230, 118, 0.1); border: 1px solid var(--color-green); color: var(--color-green); border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; font-size: 0.95rem;">
+              3</div>
+            <div>
+              <h4 style="font-size: 1rem; color: #fff; margin-bottom: 4px; font-weight: 600;">Contextual AI Reasoning
+              </h4>
+              <p style="font-size: 0.85rem; color: var(--color-text-secondary); line-height: 1.5; margin: 0;">A parsed
+                synthesis explaining the underlying drivers of risk, including OPEC choices, conflict zones, and
+                logistics delays.</p>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Live Signal Stream Section -->
+    <section id="signals" class="signals-section">
+
+      <div class="signals-grid-layout">
+
+        <!-- Left Side Headline Header -->
+        <div class="signals-left-info">
+          <span class="section-tag">LIVE SIGNAL STREAM</span>
+          <h2 class="signals-main-title">Every headline, <span class="highlight-gold-orange">analyzed.</span></h2>
+          <p class="signals-subtitle">
+            Our models read geopolitical wires, central-bank statements, OPEC notes, shipping bulletins and Indian
+            finance press in real time — then translate them into a single impact score for crude oil instability
+            in India.
+          </p>
+          <ul class="bullet-highlights">
+            <li><span class="orange-square">■</span> India-specific basket weighting (Brent + Dubai + Sour)</li>
+            <li><span class="orange-square">■</span> Global news analysis for oil market</li>
+            <li><span class="orange-square">■</span> Real-time updates on crude oil prices in India</li>
+          </ul>
+        </div>
+
+        <!-- Right Side Stream List -->
+        <div class="signals-stream-card">
+          <div class="stream-header">
+            <div class="stream-title">
+              <span class="stream-dot"></span> BREAKING NEWS
+            </div>
+            <div class="stream-label">SOURCE LINKS</div>
+          </div>
+
+          <div id="live-news-stream-list" class="stream-list">
+            <!-- Signal 1 -->
+            <div class="stream-item">
+              <div class="stream-score score-high">92</div>
+              <div class="stream-content">
+                <div class="stream-meta">
+                  <span class="meta-source">GEOPOLITICS</span>
+                  <span class="meta-divider">•</span>
+                  <span class="meta-agency">REUTERS</span>
+                  <span class="meta-divider">•</span>
+                  <span class="meta-time">12M AGO</span>
+                </div>
+                <h4 class="stream-headline">Strait of Hormuz tensions escalate after naval standoff</h4>
+                <p class="stream-details">→ +₹3.20/L on petrol pump-price model</p>
+              </div>
+              <div class="stream-impact-tag tag-high-s">HIGH</div>
+            </div>
+
+            <!-- Signal 2 -->
+            <div class="stream-item">
+              <div class="stream-score score-high">78</div>
+              <div class="stream-content">
+                <div class="stream-meta">
+                  <span class="meta-source">OPEC+</span>
+                  <span class="meta-divider">•</span>
+                  <span class="meta-agency">BLOOMBERG</span>
+                  <span class="meta-divider">•</span>
+                  <span class="meta-time">1H AGO</span>
+                </div>
+                <h4 class="stream-headline">OPEC+ signals extended voluntary cuts into Q4</h4>
+                <p class="stream-details">→ Brent floor supported near $80-82 range</p>
+              </div>
+              <div class="stream-impact-tag tag-high-s">HIGH</div>
+            </div>
+
+            <!-- Signal 3 -->
+            <div class="stream-item">
+              <div class="stream-score score-watch">55</div>
+              <div class="stream-content">
+                <div class="stream-meta">
+                  <span class="meta-source">INDIA</span>
+                  <span class="meta-divider">•</span>
+                  <span class="meta-agency">ECONOMIC TIMES</span>
+                  <span class="meta-divider">•</span>
+                  <span class="meta-time">2H AGO</span>
+                </div>
+                <h4 class="stream-headline">IOC, BPCL, HPCL margins squeeze as crude crosses $82</h4>
+                <p class="stream-details">→ OMC stocks: bearish 5-day tilt</p>
+              </div>
+              <div class="stream-impact-tag tag-watch-s">WATCH</div>
+            </div>
+
+            <!-- Signal 4 -->
+            <div class="stream-item">
+              <div class="stream-score score-high">71</div>
+              <div class="stream-content">
+                <div class="stream-meta">
+                  <span class="meta-source">SHIPPING</span>
+                  <span class="meta-divider">•</span>
+                  <span class="meta-agency">LLOYD'S LIST</span>
+                  <span class="meta-divider">•</span>
+                  <span class="meta-time">4H AGO</span>
+                </div>
+                <h4 class="stream-headline">Red Sea reroutes add 12-18 days to West-bound crude</h4>
+                <p class="stream-details">→ Freight premium + $1.4/bbl on Indian basket</p>
+              </div>
+              <div class="stream-impact-tag tag-high-s">HIGH</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="main-footer">
+    <div class="footer-container">
+      <div class="footer-left">
+        <a href="#" class="logo-wrapper">
+          <img src="../static/GeoPulse Logo.png" alt="GeoPulse A.I. Logo" class="brand-logo">
+          <span class="logo-text-gradient">GEOPULSE</span>
+        </a>
+      </div>
+      <div class="footer-right">
+        <p class="footer-meta">
+          <span>© 2026 GeoPulse</span>
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- App Script -->
+  <script src="../static/script.js"></script>
+  <script>
+    let cachedApiData = null;
+    let targetInstabilityScore = 0;
+    let gaugeAnimated = false;
+    let gaugeObserver = null;
+
+    // Dynamic rotating status text for page loader
+    const loaderStatuses = [
+      "Analyzing geopolitical wires...",
+      "Fetching real-time commodity news...",
+      "Running GeoPulse prediction models...",
+      "Predicting Indian Basket Price...",
+      "Computing Instability Index...",
+      "Polishing real-time data visualizers..."
+    ];
+    let loaderStatusIdx = 0;
+    const loaderTextInterval = setInterval(() => {
+      const el = document.querySelector('.loader-text');
+      if (el) {
+        loaderStatusIdx = (loaderStatusIdx + 1) % loaderStatuses.length;
+        el.textContent = loaderStatuses[loaderStatusIdx];
+      }
+    }, 3000);
+
+    function observeGaugeIntersection() {
+      const gaugeEl = document.getElementById('arrow-src-gauge');
+      if (!gaugeEl) return;
+
+      if (gaugeObserver) {
+        gaugeObserver.disconnect();
+      }
+
+      gaugeObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting && !gaugeAnimated) {
+            gaugeAnimated = true;
+            setTimeout(() => {
+              const circle = document.getElementById('instability-gauge-circle');
+              if (circle) {
+                const circumference = 314.16;
+                const offset = circumference - (targetInstabilityScore / 100) * circumference;
+                circle.style.strokeDashoffset = offset;
+              }
+            }, 150);
+          }
+        });
+      }, { threshold: 0.15 });
+
+      gaugeObserver.observe(gaugeEl);
+    }
+
+    let basketChart = null;
+
+    function renderBasketChart(actualVal, predictedVal, currencySymbol) {
+      const canvas = document.getElementById('basketComparisonChart');
+      if (!canvas) return;
+
+      const actualNum = parseFloat(actualVal) || 0;
+      const predictedNum = parseFloat(predictedVal) || 0;
+
+      const today = new Date();
+      const currentDateStr = `${today.getDate()} ${today.toLocaleString('default', { month: 'short' })} ${today.getFullYear()}`;
+
+      const labels = ['', currentDateStr, ''];
+      const dataPoints = [actualNum, null, predictedNum];
+
+      if (typeof Chart === 'undefined') {
+        const ctx = canvas.getContext('2d');
+        if (ctx) drawCanvasFallbackLine(ctx, currentDateStr, actualNum, predictedNum, currencySymbol);
+        return;
+      }
+
+      const ctx = canvas.getContext('2d');
+
+      const lineGradient = ctx.createLinearGradient(0, 0, canvas.width || 300, 0);
+      lineGradient.addColorStop(0, '#38bdf8');
+      lineGradient.addColorStop(1, '#f0a500');
+
+      const areaGradient = ctx.createLinearGradient(0, 0, 0, 110);
+      areaGradient.addColorStop(0, 'rgba(240, 165, 0, 0.25)');
+      areaGradient.addColorStop(1, 'rgba(56, 189, 248, 0.02)');
+
+      if (basketChart) {
+        basketChart.data.labels = labels;
+        basketChart.data.datasets[0].data = dataPoints;
+        basketChart.data.datasets[0].borderColor = lineGradient;
+        basketChart.data.datasets[0].backgroundColor = areaGradient;
+        basketChart.options.scales.y.ticks.callback = function (value) {
+          return currencySymbol + ' ' + value.toFixed(1);
+        };
+        basketChart.options.plugins.tooltip.callbacks.label = function (context) {
+          const val = context.raw;
+          const typeLabel = context.dataIndex === 0 ? 'Actual' : 'Predicted';
+          return `${typeLabel}: ${currencySymbol} ${val.toFixed(2)} /bbl`;
+        };
+        basketChart.update();
+        return;
+      }
+
+      basketChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: 'Indian Basket Price',
+              data: dataPoints,
+              borderColor: lineGradient,
+              backgroundColor: areaGradient,
+              borderWidth: 3,
+              tension: 0.25,
+              fill: true,
+              spanGaps: true,
+              pointBackgroundColor: ['#38bdf8', 'transparent', '#f0a500'],
+              pointBorderColor: ['#13130f', 'transparent', '#13130f'],
+              pointBorderWidth: 3,
+              pointRadius: [7, 0, 7],
+              pointHoverRadius: [10, 0, 10],
+              pointHoverBackgroundColor: ['#38bdf8', 'transparent', '#f0a500'],
+              pointHoverBorderColor: ['#ffffff', 'transparent', '#ffffff'],
+              pointHoverBorderWidth: 3
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: {
+            mode: 'nearest',
+            intersect: false
+          },
+          animation: {
+            duration: 750,
+            easing: 'easeOutQuart'
+          },
+          plugins: {
+            legend: {
+              display: false
+            },
+            tooltip: {
+              enabled: true,
+              backgroundColor: 'rgba(13, 13, 10, 0.95)',
+              titleColor: '#f5f5f0',
+              titleFont: { family: 'Inter', size: 12, weight: '700' },
+              bodyColor: '#ffc857',
+              bodyFont: { family: 'Inter', size: 13, weight: '600' },
+              borderColor: 'rgba(240, 165, 0, 0.5)',
+              borderWidth: 1,
+              padding: 12,
+              displayColors: false,
+              filter: function (tooltipItem) {
+                return tooltipItem.dataIndex !== 1;
+              },
+              callbacks: {
+                title: function (tooltipItems) {
+                  const item = tooltipItems[0];
+                  return item.dataIndex === 0 ? 'Actual Price (Back-dated)' : 'Predicted Price (Live Market)';
+                },
+                label: function (context) {
+                  const val = context.raw;
+                  const typeLabel = context.dataIndex === 0 ? 'Actual' : 'Predicted';
+                  const currSelect = document.getElementById('currency-select');
+                  const currSym = (currSelect && currSelect.value === 'INR') ? '₹' : '$';
+                  return `${typeLabel}: ${currSym} ${val.toFixed(2)} /bbl`;
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              grid: { color: 'rgba(255, 255, 255, 0.03)', drawBorder: false },
+              ticks: {
+                color: '#f5f5f0',
+                font: { family: 'Inter', size: 11, weight: '700' },
+                maxRotation: 0,
+                minRotation: 0,
+                padding: 6
+              }
+            },
+            y: {
+              grid: { color: 'rgba(255, 255, 255, 0.08)', drawBorder: false },
+              ticks: {
+                color: '#f5f5f0',
+                font: { family: 'Inter', size: 11, weight: '600' },
+                callback: function (value) {
+                  return currencySymbol + ' ' + value.toFixed(1);
+                }
+              },
+              beginAtZero: false
+            }
+          }
+        }
+      });
+    }
+
+    function drawCanvasFallbackLine(ctx, currentDateStr, actualNum, predictedNum, currencySymbol) {
+      const canvas = ctx.canvas;
+      const width = canvas.width = canvas.parentElement.clientWidth || 300;
+      const height = canvas.height = 110;
+      ctx.clearRect(0, 0, width, height);
+
+      const minVal = Math.min(actualNum, predictedNum) * 0.95;
+      const maxVal = Math.max(actualNum, predictedNum) * 1.05;
+      const range = maxVal - minVal || 1;
+
+      const paddingLeft = 60;
+      const paddingRight = 40;
+      const paddingTop = 20;
+      const paddingBottom = 25;
+      const chartW = width - paddingLeft - paddingRight;
+      const chartH = height - paddingTop - paddingBottom;
+
+      function getY(v) {
+        return height - paddingBottom - ((v - minVal) / range) * chartH;
+      }
+
+      const x1 = paddingLeft;
+      const y1 = getY(actualNum);
+
+      const x2 = paddingLeft + chartW;
+      const y2 = getY(predictedNum);
+
+      const lineGrad = ctx.createLinearGradient(x1, y1, x2, y2);
+      lineGrad.addColorStop(0, '#38bdf8');
+      lineGrad.addColorStop(1, '#f0a500');
+
+      const areaGrad = ctx.createLinearGradient(0, paddingTop, 0, height - paddingBottom);
+      areaGrad.addColorStop(0, 'rgba(240, 165, 0, 0.2)');
+      areaGrad.addColorStop(1, 'rgba(56, 189, 248, 0.02)');
+
+      ctx.fillStyle = areaGrad;
+      ctx.beginPath();
+      ctx.moveTo(x1, y1);
+      ctx.lineTo(x2, y2);
+      ctx.lineTo(x2, height - paddingBottom);
+      ctx.lineTo(x1, height - paddingBottom);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.strokeStyle = lineGrad;
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(x1, y1);
+      ctx.lineTo(x2, y2);
+      ctx.stroke();
+
+      ctx.fillStyle = '#38bdf8';
+      ctx.strokeStyle = '#13130f';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.arc(x1, y1, 6, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = '#f0a500';
+      ctx.strokeStyle = '#13130f';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.arc(x2, y2, 6, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = '#f5f5f0';
+      ctx.font = '700 11px Inter, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(currentDateStr, (x1 + x2) / 2, height - 6);
+    }
+
+
+    function updateCrudeSliders() {
+      if (!cachedApiData) return;
+
+      const currency = document.getElementById('currency-select').value;
+      const usdToInrRate = parseFloat(cachedApiData.USD_to_INR?.split(' ')[0]) || 1;
+
+      const crudes = [
+        { key: 'Oman', valId: 'val-oman', progId: 'prog-oman', pointerId: 'pointer-oman' },
+        { key: 'Dubai', valId: 'val-dubai', progId: 'prog-dubai', pointerId: 'pointer-dubai' },
+        { key: 'BRENT', valId: 'val-brent', progId: 'prog-brent', pointerId: 'pointer-brent' },
+        { key: 'WTI', valId: 'val-wti', progId: 'prog-wti', pointerId: 'pointer-wti' },
+        { key: 'OPEC', valId: 'val-opec', progId: 'prog-opec', pointerId: 'pointer-opec' }
+      ];
+
+      let maxUsdVal = 100;
+      crudes.forEach(item => {
+        if (cachedApiData[item.key]) {
+          const rawVal = parseFloat(cachedApiData[item.key].split(' ')[0]) || 0;
+          if (rawVal > maxUsdVal) maxUsdVal = rawVal;
+        }
+      });
+
+      crudes.forEach(item => {
+        if (cachedApiData[item.key]) {
+          const rawVal = parseFloat(cachedApiData[item.key].split(' ')[0]) || 0;
+          const displayVal = currency === 'INR'
+            ? (rawVal * usdToInrRate).toFixed(2)
+            : rawVal.toString();
+
+          const valEl = document.getElementById(item.valId);
+          const progEl = document.getElementById(item.progId);
+          const pointerEl = document.getElementById(item.pointerId);
+
+          if (valEl) valEl.textContent = displayVal;
+
+          const pct = Math.max(0, (rawVal / maxUsdVal) * 100);
+          if (progEl) progEl.style.width = pct + '%';
+          if (pointerEl) pointerEl.style.left = pct + '%';
+        }
+      });
+
+      if (cachedApiData.Indian_Basket) {
+        const rawBasket = parseFloat(cachedApiData.Indian_Basket.split(' ')[0]) || 0;
+        const displayBasket = currency === 'INR'
+          ? (rawBasket * usdToInrRate).toFixed(1)
+          : rawBasket.toFixed(2);
+        const basketEl = document.getElementById('crude-score');
+        if (basketEl) basketEl.textContent = displayBasket;
+
+        const unitEl = document.getElementById('crude-unit');
+        if (unitEl) {
+          unitEl.textContent = currency === 'INR' ? ' ₹/bbl' : ' $/bbl';
+        }
+      }
+
+      let actualRaw = 0;
+      if (cachedApiData["Indian Basket"]) {
+        actualRaw = parseFloat(cachedApiData["Indian Basket"].split(' ')[0]) || 0;
+      } else if (cachedApiData.Indian_Basket_Actual) {
+        actualRaw = parseFloat(cachedApiData.Indian_Basket_Actual.split(' ')[0]) || 0;
+      }
+
+      let predictedRaw = 0;
+      if (cachedApiData.Indian_Basket) {
+        predictedRaw = parseFloat(cachedApiData.Indian_Basket.split(' ')[0]) || 0;
+      }
+
+      const actualVal = currency === 'INR' ? (actualRaw * usdToInrRate) : actualRaw;
+      const predictedVal = currency === 'INR' ? (predictedRaw * usdToInrRate) : predictedRaw;
+      const currSymbol = currency === 'INR' ? '₹' : '$';
+
+      const historyData = cachedApiData.Indian_Basket_History || null;
+      renderBasketChart(actualVal, predictedVal, currSymbol, historyData, usdToInrRate, currency);
+    }
+
+    async function fetchCrudePrices() {
+      try {
+        const response = await fetch("/crude_prices");
+        const data = await response.json();
+        console.log(data);
+        cachedApiData = data;
+
+        // Header stats without units
+        if (data.petrol) document.getElementById('stat-signals').textContent = "₹ " + data.petrol.split(' ')[0];
+        if (data.diesel) document.getElementById('stat-sources').textContent = "₹ " + data.diesel.split(' ')[0];
+        if (data.USD_to_INR) document.getElementById('stat-refresh').textContent = data.USD_to_INR.split(' ')[0];
+        // Update marquee values across all track duplicates
+        const updateMarquee = (name, value) => {
+          document.querySelectorAll('.ticker-track .ticker-item').forEach(item => {
+            const nameEl = item.querySelector('.ticker-name');
+            if (nameEl && nameEl.textContent.trim().toUpperCase() === name.toUpperCase()) {
+              const valEl = item.querySelector('.ticker-value');
+              if (valEl) {
+                valEl.textContent = value;
+              }
+            }
+          });
+        };
+
+        if (data.BRENT) updateMarquee('BRENT', data.BRENT.split(' ')[0]);
+        if (data.WTI) updateMarquee('WTI', data.WTI.split(' ')[0]);
+        if (data.OPEC) updateMarquee('OPEC', data.OPEC.split(' ')[0]);
+        if (data.Oman) updateMarquee('OMAN', data.Oman.split(' ')[0]);
+        if (data.Dubai) updateMarquee('DUBAI', data.Dubai.split(' ')[0]);
+        if (data.petrol) updateMarquee('PETROL', data.petrol.split(' ')[0]);
+        if (data.diesel) updateMarquee('DIESEL', data.diesel.split(' ')[0]);
+
+        // Render percentage change badges for petrol and diesel
+        function renderChange(elementId, changeStr) {
+          const el = document.getElementById(elementId);
+          if (!el || !changeStr) return;
+          const cleanStr = changeStr.replace('%', '').trim();
+          const num = parseFloat(cleanStr);
+          if (isNaN(num)) return;
+
+          if (num > 0) {
+            el.className = "stat-change text-green";
+            el.innerHTML = `▲ +${num}%`;
+          } else if (num < 0) {
+            el.className = "stat-change text-red";
+            el.innerHTML = `▼ ${num}%`;
+          } else {
+            el.className = "stat-change text-neutral";
+            el.innerHTML = `▲ 0%`;
+          }
+        }
+
+        renderChange('stat-petrol-change', data.petrol_change);
+        renderChange('stat-diesel-change', data.diesel_change);
+
+        // Update crude sliders (delayed slightly so transition runs as loader fades out)
+        setTimeout(updateCrudeSliders, 300);
+
+        // Update Instability Index UI elements
+        if (data.instability_index !== undefined) {
+          targetInstabilityScore = parseInt(data.instability_index);
+          document.getElementById('instability-value').textContent = targetInstabilityScore;
+
+          // Reset gauge before scroll triggers animation
+          const circle = document.getElementById('instability-gauge-circle');
+          if (circle) {
+            circle.style.strokeDashoffset = '314.16';
+            circle.setAttribute('stroke', 'var(--color-accent, #f0a500)');
+          }
+          gaugeAnimated = false;
+          observeGaugeIntersection();
+        }
+
+        if (data.instability_impact) {
+          const impactEl = document.getElementById('instability-impact');
+          if (impactEl) {
+            const text = data.instability_impact.trim();
+            const isRise = text.toLowerCase().includes('rise');
+            impactEl.innerHTML = isRise
+              ? '<i class="fa-solid fa-arrow-trend-up" style="margin-right: 4px;"></i> Rise'
+              : '<i class="fa-solid fa-arrow-trend-down" style="margin-right: 4px;"></i> Fall';
+
+            // Format color based on impact statement
+            if (isRise) {
+              impactEl.style.color = 'var(--color-red, #ff4d4d)';
+              impactEl.style.background = 'rgba(255, 77, 77, 0.1)';
+              impactEl.style.borderColor = 'rgba(255, 77, 77, 0.2)';
+            } else {
+              impactEl.style.color = 'var(--color-green, #00e676)';
+              impactEl.style.background = 'rgba(0, 230, 118, 0.1)';
+              impactEl.style.borderColor = 'rgba(0, 230, 118, 0.2)';
+            }
+          }
+        }
+
+        if (data.instability_reason) {
+          const reasonEl = document.getElementById('instability-reason');
+          if (reasonEl) reasonEl.textContent = data.instability_reason;
+        }
+
+        if (data.live_news && Array.isArray(data.live_news) && data.live_news.length > 0) {
+          const streamListEl = document.getElementById('live-news-stream-list');
+          if (streamListEl) {
+            streamListEl.innerHTML = '';
+
+            function formatNewsDate(dateStr) {
+              if (!dateStr) return 'Recently';
+              try {
+                const d = new Date(dateStr);
+                if (isNaN(d.getTime())) {
+                  return dateStr.length > 16 ? dateStr.substring(0, 16) : dateStr;
+                }
+                const day = String(d.getDate()).padStart(2, '0');
+                const month = d.toLocaleString('default', { month: 'short' });
+                const hours = String(d.getHours()).padStart(2, '0');
+                const mins = String(d.getMinutes()).padStart(2, '0');
+                return `${day} ${month}, ${hours}:${mins}`;
+              } catch (e) {
+                return 'Recently';
+              }
+            }
+
+            data.live_news.forEach((news) => {
+              const item = document.createElement('div');
+              item.className = 'stream-item';
+              const formattedTime = formatNewsDate(news.published);
+
+              item.innerHTML = `
+                <div class="stream-icon"><i class="fa-solid fa-newspaper"></i></div>
+                <div class="stream-content">
+                  <div class="stream-meta">
+                    <span class="meta-source">${news.source}</span>
+                    <span class="meta-divider">•</span>
+                    <span class="meta-time">${formattedTime}</span>
+                  </div>
+                  <h4 class="stream-headline"><a href="${news.link}" target="_blank">${news.title}</a></h4>
+                </div>
+                <div class="stream-action">
+                  <a href="${news.link}" target="_blank" class="stream-link-btn">Link <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+                </div>
+              `;
+              streamListEl.appendChild(item);
+            });
+          }
+        }
+
+        // Draw connections after data renders
+        setTimeout(drawExplanatoryArrows, 100);
+      } catch (err) {
+        console.error("Failed to fetch crude prices:", err);
+      } finally {
+        // Clear status text animation interval
+        if (typeof loaderTextInterval !== 'undefined') {
+          clearInterval(loaderTextInterval);
+        }
+        const loader = document.getElementById('page-loader');
+        if (loader) {
+          loader.style.opacity = '0';
+          loader.style.visibility = 'hidden';
+          setTimeout(() => {
+            loader.style.display = 'none';
+          }, 600);
+        }
+      }
+    }
+
+    function drawExplanatoryArrows() {
+      const grid = document.getElementById('instability-section-grid');
+      const svg = document.getElementById('exploded-arrows-svg');
+      if (!grid || !svg) return;
+
+      const isStacked = window.innerWidth < 992;
+      if (isStacked) {
+        svg.style.display = 'none';
+        return;
+      } else {
+        svg.style.display = 'block';
+      }
+
+      const gridRect = grid.getBoundingClientRect();
+
+      function getCoords(el) {
+        if (!el) return null;
+        const rect = el.getBoundingClientRect();
+        return {
+          left: rect.left - gridRect.left,
+          right: rect.right - gridRect.left,
+          top: rect.top - gridRect.top,
+          bottom: rect.bottom - gridRect.top,
+          width: rect.width,
+          height: rect.height,
+          centerX: (rect.left + rect.right) / 2 - gridRect.left,
+          centerY: (rect.top + rect.bottom) / 2 - gridRect.top
+        };
+      }
+
+      const srcGauge = getCoords(document.getElementById('arrow-src-gauge'));
+      const srcImpact = getCoords(document.getElementById('instability-impact'));
+      const srcReasoning = getCoords(document.getElementById('instability-reason'));
+
+      const tgt1 = getCoords(document.getElementById('arrow-tgt-1'));
+      const tgt2 = getCoords(document.getElementById('arrow-tgt-2'));
+      const tgt3 = getCoords(document.getElementById('arrow-tgt-3'));
+
+      // Path 1: Gauge (right edge) to Target 1 (left edge)
+      if (srcGauge && tgt1) {
+        const startX = srcGauge.right - 20;
+        const startY = srcGauge.centerY - 25;
+        const endX = tgt1.left - 6;
+        const endY = tgt1.centerY;
+        const controlX = startX + (endX - startX) * 0.45;
+        const controlY = startY + (endY - startY) * 0.1;
+        document.getElementById('path-arrow-1').setAttribute('d', `M ${startX} ${startY} Q ${controlX} ${controlY} ${endX} ${endY}`);
+      }
+
+      // Path 2: Impact badge (bottom/right edge) to Target 2 (left edge)
+      if (srcImpact && tgt2) {
+        const startX = srcImpact.right;
+        const startY = srcImpact.centerY;
+        const endX = tgt2.left - 6;
+        const endY = tgt2.centerY;
+
+        // Deep sweep down and right
+        const controlX1 = startX + 25;
+        const controlY1 = startY + 120;
+        const controlX2 = endX - 80;
+        const controlY2 = endY + 70;
+
+        document.getElementById('path-arrow-2').setAttribute('d', `M ${startX} ${startY} C ${controlX1} ${controlY1} ${controlX2} ${controlY2} ${endX} ${endY}`);
+      }
+
+      // Path 3: Reasoning paragraph (bottom edge) to Target 3 (left edge)
+      if (srcReasoning && tgt3) {
+        const startX = srcReasoning.right - 20;
+        const startY = srcReasoning.bottom;
+        const endX = tgt3.left - 6;
+        const endY = tgt3.centerY;
+
+        // Smooth loop down and right
+        const controlX1 = startX + 30;
+        const controlY1 = startY + 60;
+        const controlX2 = endX - 60;
+        const controlY2 = endY + 50;
+
+        document.getElementById('path-arrow-3').setAttribute('d', `M ${startX} ${startY} C ${controlX1} ${controlY1} ${controlX2} ${controlY2} ${endX} ${endY}`);
+      }
+    }
+
+    document.getElementById('currency-select').addEventListener('change', updateCrudeSliders);
+    window.addEventListener('resize', drawExplanatoryArrows);
+    fetchCrudePrices();
+    // Run drawing after a short timeout to make sure initial layout has computed positions
+    setTimeout(drawExplanatoryArrows, 600);
+  </script>
+</body>
+
+</html>
