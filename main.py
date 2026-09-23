@@ -5,7 +5,7 @@ import pandas as pd
 import json
 import feedparser
 import os
-from google import genai
+from transformers import pipeline
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -14,6 +14,13 @@ app = Flask(__name__)
 # Load the trained XGBoost model once at startup
 model = xgb.XGBRegressor()
 model.load_model("xgb_model.json")
+
+# Load FinBERT model once at startup
+try:
+    finbert_pipeline = pipeline("text-classification", model="ProsusAI/finbert", top_k=None)
+except Exception as e:
+    print("Warning: Could not initialize FinBERT pipeline at startup:", e)
+    finbert_pipeline = None
 
 
 @app.route("/")
@@ -98,7 +105,7 @@ def crude_prices():
         else:
             all_crude_prices["Indian_Basket_Actual"] = all_crude_prices["Indian_Basket"]
         
-        # Calculate Instability Index based on live news feed using Gemini
+        # Calculate Instability Index based on live news feed using FinBERT
         try:
             feeds = feedparser.parse("https://oilprice.com/rss/main")
             feeds2 = feedparser.parse("https://news.google.com/rss/search?q=oil")
@@ -124,23 +131,43 @@ def crude_prices():
                     })
             
             all_crude_prices["live_news"] = live_news
-            req_headlines = ", ".join(news_headlines)
             
-            api_key = os.getenv("GEMINI_API_KEY")
-            if not api_key:
-                raise ValueError("GEMINI_API_KEY environment variable is not set.")
+            if finbert_pipeline and news_headlines:
+                results = finbert_pipeline(news_headlines)
+                avg_neg, avg_pos, avg_neu = 0.0, 0.0, 0.0
+                top_headline = news_headlines[0]
+                max_neg_score = -1.0
                 
-            client = genai.Client(api_key=api_key)
-            interaction = client.interactions.create(
-                model="gemini-flash-lite-latest",
-                input=f"These are the news: {req_headlines}, give me just the json output as 'instability_index' parameter ranging from 1-100, 'impact' parameter which tells oil prices will rise or fall and 'reason' parameter which explains why. Do not format your response in any way (no markdown blocks or prefix/suffix). Just the raw json string.",
-            )
-            raw_text = interaction.output_text
-            cleaned_text = raw_text.replace('```json', "").replace('```', "").strip()
-            res_json = json.loads(cleaned_text)
-            all_crude_prices["instability_index"] = int(res_json.get("instability_index", 68))
-            all_crude_prices["instability_impact"] = res_json.get("impact", "oil price will rise")
-            all_crude_prices["instability_reason"] = res_json.get("reason", "Geopolitical tensions in the Middle East and OPEC production cuts are raising supply risk concerns.")
+                for headline, res in zip(news_headlines, results):
+                    scores = {item['label']: item['score'] for item in res}
+                    neg = scores.get('negative', 0.0)
+                    pos = scores.get('positive', 0.0)
+                    neu = scores.get('neutral', 0.0)
+                    avg_neg += neg
+                    avg_pos += pos
+                    avg_neu += neu
+                    
+                    if neg > max_neg_score:
+                        max_neg_score = neg
+                        top_headline = headline
+                
+                n = len(news_headlines)
+                avg_neg /= n
+                avg_pos /= n
+                avg_neu /= n
+                
+                # Compute 1-100 instability index score based on sentiment breakdown
+                instability_score = max(1, min(100, int(round(50 + (avg_neg - avg_pos) * 50))))
+                impact_val = "oil price will rise" if avg_neg >= avg_pos else "oil price will fall"
+                reason_val = f"FinBERT sentiment analysis indicates {'high supply risk and market pressure' if avg_neg >= avg_pos else 'stable market conditions'} (Negative: {avg_neg:.0%}, Positive: {avg_pos:.0%}). Primary headline factor: \"{top_headline}\"."
+                
+                all_crude_prices["instability_index"] = instability_score
+                all_crude_prices["instability_impact"] = impact_val
+                all_crude_prices["instability_reason"] = reason_val
+            else:
+                all_crude_prices["instability_index"] = 68
+                all_crude_prices["instability_impact"] = "oil price will rise"
+                all_crude_prices["instability_reason"] = "Geopolitical tensions in the Middle East and OPEC production cuts are raising supply risk concerns."
         except Exception as e:
             print("Error parsing instability index:", e)
             all_crude_prices["instability_index"] = 68
